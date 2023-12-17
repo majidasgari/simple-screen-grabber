@@ -5,10 +5,14 @@ root_folder="/home/majid/Pictures/Coder_Screenshots/"
 days=30
 seconds=10
 notification_interval=30
-notification_text="Dr. Coder's Screenshot Grabber is working"
+app_name="Dr. Coder's Screenshot Grabber"
+notification_text="is working"
+scale="50%"
+
+mkdir -p "$root_folder"
 
 # Display a notification to the user
-notify-send "Dr. Coder's Screenshot Grabber" "is starting"
+notify-send "$app_name" "is starting"
 
 # Initialize the grab counter
 grab_counter=0
@@ -28,14 +32,15 @@ do
     /usr/bin/spectacle -a -b -n -o "$root_folder/$date/$timestamp.png"
 
     # Scale down the screenshot to 50%
-    convert "$root_folder/$date/$timestamp.png" -resize 50% "$root_folder/$date/$timestamp.png"
+    convert "$root_folder/$date/$timestamp.png" -resize $scale "$root_folder/$date/$timestamp.jpg"
+    rm "$root_folder/$date/$timestamp.png"
 
     # Increment the grab counter
     ((grab_counter++))
 
     # Check if it's time to display a notification
     if (( grab_counter % notification_interval == 0 )); then
-        notify-send "Dr. Coder's Screenshot Grabber" "$notification_text"
+        notify-send "$app_name" "$notification_text"
     fi
 
     # Wait for 10 seconds before taking the next screenshot
