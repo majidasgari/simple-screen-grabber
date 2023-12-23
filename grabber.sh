@@ -28,13 +28,21 @@ do
     # Get the current timestamp
     timestamp=$(date +%Y-%m-%d_%H-%M-%S)
 
-    # Take a screenshot of the current window
-    /usr/bin/spectacle -a -b -n -o "$root_folder/$date/$timestamp.png"
-
-    # Scale down the screenshot to 50%
-    convert "$root_folder/$date/$timestamp.png" -resize $scale "$root_folder/$date/$timestamp.jpg"
-    rm "$root_folder/$date/$timestamp.png"
-
+    # Check if another instance of Spectacle is running
+    if pgrep -x spectacle > /dev/null; then
+        echo "Another instance of Spectacle is running. Skipping this grab."
+    else
+        if qdbus org.kde.screensaver /ScreenSaver org.freedesktop.ScreenSaver.GetActive | grep -q true; then
+            echo "Screen is locked. Skipping this grab."
+        else
+            # Take a screenshot of the current window
+            /usr/bin/spectacle -a -b -n -o "$root_folder/$date/$hour/$timestamp.png"
+            # Scale down the screenshot to 50%
+            convert "$root_folder/$date/$hour/$timestamp.png" -resize $scale "$root_folder/$date/$hour/$timestamp.jpg"
+            rm "$root_folder/$date/$hour/$timestamp.png"
+        fi
+    fi
+    
     # Increment the grab counter
     ((grab_counter++))
 
